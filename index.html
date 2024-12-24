@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="notification-popup" id="notification">
+            <div class="notification-content">
+                <i class="fas fa-check-circle"></i>
+                <p></p>
+            </div>
+        </div>
+        <aside class="sidebar">
+            <ul>
+                <li data-section="balance-summary" class="active">
+                    <i class="fas fa-wallet"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li data-section="quick-add">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>New Transaction</span>
+                </li>
+                <li data-section="transactions">
+                    <i class="fas fa-list-alt"></i>
+                    <span>Transactions</span>
+                </li>
+                <li data-section="charts">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </li>
+                <li data-section="export">
+                    <i class="fas fa-file-export"></i>
+                    <span>Export</span>
+                </li>
+            </ul>
+        </aside>
+
+        <div class="content">
+            <header>
+                <h1><i class="fas fa-wallet"></i> Expense Dashboard</h1>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Balance Cards -->
+                <div class="card balance-summary">
+                    <div class="balance-item total">
+                        <h3>Available Budget</h3>
+                        <p id="total-balance">$0.00</p>
+                        <button id="set-budget" class="budget-btn">
+                            <i class="fas fa-plus"></i> Set Money Made
+                        </button>
+                    </div>
+                    <div class="balance-item expenses">
+                        <h3>Total Spent</h3>
+                        <p id="expense-total">$0.00</p>
+                        <div class="comparison">
+                            <span id="expense-percent" class="trend">
+                                <i class="fas fa-chart-pie"></i> 0% of budget
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Add Transaction -->
+                <div class="card quick-add">
+                    <h3>Add Expense</h3>
+                    <form id="transaction-form">
+                        <div class="form-row">
+                            <input type="text" id="description" placeholder="What did you spend on?" required>
+                            <input type="number" id="amount" placeholder="Amount" required step="0.01">
+                            <button type="submit">Add Expense</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Transaction History -->
+                <div class="card transactions">
+                    <div class="card-header">
+                        <h3>Recent Transactions</h3>
+                        <div class="actions">
+                            <button id="export-csv" class="export-btn">
+                                <i class="fas fa-file-csv"></i> Export CSV
+                            </button>
+                            <button id="export-pdf" class="export-btn">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="transactions-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Charts 
+                <div class="card charts">
+                    <div class="chart-container">
+                        <canvas id="expense-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="category-chart"></canvas>
+                    </div>
+                </div>-->
+
+                <div class="card analytics" id="analytics-view" style="display: none;">
+                    <div class="analytics-header">
+                        <h3>Expense Analytics</h3>
+                        <div class="view-options">
+                            <button class="view-btn active" data-view="charts">
+                                <i class="fas fa-chart-pie"></i> Charts
+                            </button>
+                            <button class="view-btn" data-view="table">
+                                <i class="fas fa-table"></i> Table
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-content">
+                        <div class="charts-view">
+                            <div class="chart-grid">
+                                <div class="chart-card">
+                                    <h4>Spending Overview</h4>
+                                    <canvas id="spending-overview"></canvas>
+                                </div>
+                                <div class="chart-card">
+                                    <h4>Top Expenses</h4>
+                                    <canvas id="top-expenses"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-view" style="display: none;">
+                            <div class="analytics-table">
+                                <h4>Expense Summary</h4>
+                                <table id="analytics-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>% of Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="budget-modal" class="modal">
+        <div class="modal-content">
+            <h2>Set Money Made</h2>
+            <form id="budget-form">
+                <div class="form-group">
+                    <label for="initial-budget">Amount Made</label>
+                    <input type="number" id="initial-budget" required step="0.01" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeBudgetModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
