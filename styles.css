@@ -339,10 +339,12 @@ th, td {
 @media (max-width: 768px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
+        padding: 0;
     }
     
     .balance-summary {
         flex-direction: column;
+        gap: 15px;
     }
     
     .charts {
@@ -351,6 +353,125 @@ th, td {
     
     .form-row {
         flex-direction: column;
+    }
+
+    /* Add these new styles */
+    .sidebar {
+        width: 50px;  /* Slightly smaller sidebar on mobile */
+    }
+
+    .content {
+        margin-left: 50px;
+        padding: 15px;
+        max-width: calc(100% - 50px);
+    }
+
+    .sidebar:hover {
+        width: 180px;
+    }
+
+    .sidebar:hover ~ .content {
+        margin-left: 180px;
+        max-width: calc(100% - 180px);
+    }
+
+    /* Improve table responsiveness */
+    .table-container {
+        margin: 0 -15px;  /* Negative margin to allow full-width scrolling */
+        padding: 0 15px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 10px 8px;
+    }
+
+    /* Adjust card padding */
+    .card {
+        padding: 15px;
+    }
+
+    /* Make balance items more compact */
+    .balance-item {
+        padding: 15px;
+    }
+
+    .balance-item p {
+        font-size: 24px;
+    }
+
+    /* Improve chart responsiveness */
+    .chart-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .chart-card {
+        height: 300px;
+    }
+}
+
+/* Add new media query for extra small devices */
+@media (max-width: 480px) {
+    .dashboard-grid {
+        gap: 15px;
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
+
+    .balance-item p {
+        font-size: 20px;
+    }
+
+    .form-row button {
+        width: 100%;
+    }
+
+    .actions {
+        flex-wrap: wrap;
+    }
+
+    .export-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Adjust modal for smaller screens */
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+
+    /* Make analytics more mobile-friendly */
+    .view-options {
+        flex-wrap: wrap;
+    }
+
+    .view-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .analytics {
+        max-height: none;
+    }
+}
+
+/* Add orientation-specific styles */
+@media (max-width: 768px) and (orientation: landscape) {
+    .balance-summary {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .chart-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
